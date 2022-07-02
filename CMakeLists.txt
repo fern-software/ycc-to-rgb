@@ -9,7 +9,7 @@ set(CMAKE_C=_FLAGS "${CMAKE_C_FLAGS} -Wall")
 set(C_STANDARD C17)
 
 # executable
-add_library(ycctorgb lib/util.c)
-add_executable(main app/main.c)
-target_include_directories(main PUBLIC include)
-target_link_libraries(main ycctorgb)
+add_library(util lib/util.c)
+add_executable(ycctorgb app/ycctorgb.c)
+target_include_directories(ycctorgb PUBLIC include)
+target_link_libraries(ycctorgb util)
