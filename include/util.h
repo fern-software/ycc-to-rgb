@@ -14,6 +14,7 @@ struct ycc_img {
 	unsigned int height;
 };
 
-// reads a YCC image stored at filename and sets image to point to where the data is stored
+// reads a YCC image stored at filename and populates image with its data
 // returns a non-zero value on success, 0 on failure
+// note: allocates memory for image
 int read_ycc_img(char* filename, struct ycc_img* image);

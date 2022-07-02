@@ -10,7 +10,7 @@ int main(int argc, char **argv){
 	struct ycc_img* img;
 	
 	if(argc != 2){
-		fprintf(stderr, "YCC file name expected.\n");
+		fprintf(stderr, "YCC file expected.\n");
 		exit(EXIT_FAILURE);
 	}
 
