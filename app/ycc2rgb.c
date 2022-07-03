@@ -4,10 +4,12 @@
 #include <error.h>
 
 #include "util.h"
+#include "conversion.h"
 
 int main(int argc, char **argv){
 	int err;
-	struct ycc_img* img;
+	struct ycc_img* img = malloc(sizeof(struct ycc_img));
+	struct rgb_img* out_img = malloc(sizeof(struct rgb_img));
 	
 	if(argc != 2){
 		fprintf(stderr, "YCC file expected.\n");
@@ -19,13 +21,9 @@ int main(int argc, char **argv){
 		error(EXIT_FAILURE, errno, "reading image failed");
 	}
 
-	// TODO: remove this and call the conversion function
-	struct rgb_img* rimg = malloc(sizeof(struct rgb_img));
-	rimg->data = malloc(1024 * 1024 * sizeof(struct rgb_pixel));
-	rimg->height = IMAGE_HEIGHT;
-	rimg->width = IMAGE_WIDTH;
+	ycc_to_rgb(&img, &out_img);
 	
-	err = write_rgb_img("result.ppm", rimg);
+	err = write_rgb_img("result.ppm", out_img);
 	if(!err){
 		error(EXIT_FAILURE, errno, "writing image failed");
 	}

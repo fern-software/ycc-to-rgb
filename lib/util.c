@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 int read_ycc_img(char* filename, struct ycc_img* image){
-	image = malloc(sizeof(struct ycc_img));
 	if(!image){
 		return 0;
 	}
@@ -48,4 +47,18 @@ int write_rgb_img(char* filename, struct rgb_img* image){
 	fclose(fp);
 
 	return 1;
+}
+
+int min(int a, int b){
+	if(a <= b){
+		return a;
+	}
+	return b;
+}
+
+int max(int a, int b){
+	if(a >= b){
+		return a;
+	}
+	return b;
 }
