@@ -12,3 +12,6 @@ YCC values can be extracted from a JPG using
 [ImageMagick](https://imagemagick.org/) using the commands below.
 
 ```convert image.jpg YCbCr:image.bin```
+
+## Helpful links
+https://stackoverflow.com/questions/68994063/how-to-generate-pixel-data-of-an-image
