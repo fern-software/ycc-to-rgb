@@ -14,10 +14,20 @@ int main(int argc, char **argv){
 		exit(EXIT_FAILURE);
 	}
 
-
 	err = read_ycc_img(argv[1], img);
 	if(!err){
 		error(EXIT_FAILURE, errno, "reading image failed");
+	}
+
+	// TODO: remove this and call the conversion function
+	struct rgb_img* rimg = malloc(sizeof(struct rgb_img));
+	rimg->data = malloc(1024 * 1024 * sizeof(struct rgb_pixel));
+	rimg->height = 1024;
+	rimg->width = 1024;
+	
+	err = write_rgb_img("result.ppm", rimg);
+	if(!err){
+		error(EXIT_FAILURE, errno, "writing image failed");
 	}
 	
 	return 0;
