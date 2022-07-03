@@ -2,6 +2,9 @@
 
 #include <stdint.h>
 
+#define IMAGE_WIDTH 1024
+#define IMAGE_HEIGHT 1024
+
 struct ycc_pixel {
 	uint8_t y;
 	uint8_t cb;

@@ -22,8 +22,8 @@ int main(int argc, char **argv){
 	// TODO: remove this and call the conversion function
 	struct rgb_img* rimg = malloc(sizeof(struct rgb_img));
 	rimg->data = malloc(1024 * 1024 * sizeof(struct rgb_pixel));
-	rimg->height = 1024;
-	rimg->width = 1024;
+	rimg->height = IMAGE_HEIGHT;
+	rimg->width = IMAGE_WIDTH;
 	
 	err = write_rgb_img("result.ppm", rimg);
 	if(!err){
