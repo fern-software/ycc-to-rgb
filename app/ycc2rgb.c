@@ -11,8 +11,8 @@ int main(int argc, char **argv){
 	struct ycc_img* in_img = malloc(sizeof(struct ycc_img));
 	struct rgb_img* out_img = malloc(sizeof(struct rgb_img));
 	
-	if(argc != 2){
-		fprintf(stderr, "YCC file expected.\n");
+	if(argc != 3){
+		fprintf(stderr, "ycc input file name and ppm output file name expected.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -23,7 +23,7 @@ int main(int argc, char **argv){
 
 	ycc_to_rgb(&in_img, &out_img);
 	
-	err = write_rgb_img("result.ppm", out_img);
+	err = write_rgb_img(argv[2], out_img);
 	if(!err){
 		error(EXIT_FAILURE, errno, "writing image failed");
 	}
