@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv){
 	int err;
-	struct ycc_img* img = malloc(sizeof(struct ycc_img));
+	struct ycc_img* in_img = malloc(sizeof(struct ycc_img));
 	struct rgb_img* out_img = malloc(sizeof(struct rgb_img));
 	
 	if(argc != 2){
@@ -16,17 +16,22 @@ int main(int argc, char **argv){
 		exit(EXIT_FAILURE);
 	}
 
-	err = read_ycc_img(argv[1], img);
+	err = read_ycc_img(argv[1], in_img);
 	if(!err){
 		error(EXIT_FAILURE, errno, "reading image failed");
 	}
 
-	ycc_to_rgb(&img, &out_img);
+	ycc_to_rgb(&in_img, &out_img);
 	
 	err = write_rgb_img("result.ppm", out_img);
 	if(!err){
 		error(EXIT_FAILURE, errno, "writing image failed");
 	}
+
+	free(in_img->data);
+	free(out_img->data);
+	free(in_img);
+	free(out_img);
 	
 	return 0;
 }
