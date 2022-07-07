@@ -28,7 +28,9 @@ int main(int argc, char **argv){
 		error(EXIT_FAILURE, errno, "writing image failed");
 	}
 
-	free(in_img->data);
+	free(in_img->y);
+	free(in_img->cb);
+	free(in_img->cr);
 	free(out_img->data);
 	free(in_img);
 	free(out_img);
