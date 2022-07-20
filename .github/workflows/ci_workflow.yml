@@ -18,7 +18,7 @@ jobs:
     - uses: pguyot/arm-runner-action@v2
       id: build_image
       with:
-        base_image: raspios_lite_arm64:2022-04-04
+        base_image: raspios_lite_arm64:latest
         cpu: max:cortex-a72
         cpu_info: cpuinfo/raspberrypi_4b
         commands: |
