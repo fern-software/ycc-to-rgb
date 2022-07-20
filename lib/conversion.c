@@ -39,13 +39,15 @@ void ycc_to_rgb(struct ycc_img* src_img, struct rgb_img* dst_img){
         return;
     }
     
-    // TODO: loop could be optimized by changing the i * 4 to a bitshift
-    for(int i = 0; i < src_img->width * src_img->height; ++i){
-        struct ycc_pixel pix = src_img->data[i];
-        single_value_ycc_to_rgb(pix.y_tl, pix.cb, pix.cr, &dst_img->data[i * 4]);
-        single_value_ycc_to_rgb(pix.y_tr, pix.cb, pix.cr, &dst_img->data[(i * 4) + 1]);
-        single_value_ycc_to_rgb(pix.y_bl, pix.cb, pix.cr, &dst_img->data[(i * 4) + 2]);
-        single_value_ycc_to_rgb(pix.y_br, pix.cb, pix.cr, &dst_img->data[(i * 4) + 3]);
+    // TODO: loop could be optimized
+    for(int i = 0; i < src_img->height; ++i){
+        for(int j = 0; j < src_img->width; ++j){
+            struct ycc_pixel pix = src_img->data[i * src_img->width + j];
+            single_value_ycc_to_rgb(pix.y_tl, pix.cb, pix.cr, &(dst_img->data[i * 2 * dst_img->width + j * 2]));
+            single_value_ycc_to_rgb(pix.y_tr, pix.cb, pix.cr, &(dst_img->data[i * 2 * dst_img->width + j * 2 + 1]));
+            single_value_ycc_to_rgb(pix.y_bl, pix.cb, pix.cr, &(dst_img->data[i * 2 * dst_img->width + j * 2 + dst_img->width]));
+            single_value_ycc_to_rgb(pix.y_br, pix.cb, pix.cr, &(dst_img->data[i * 2 * dst_img->width + j * 2 + dst_img->width + 1]));
+        }
     }
 }
 
