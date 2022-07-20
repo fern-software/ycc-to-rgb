@@ -27,7 +27,7 @@ jobs:
         commands: |
             cd build
             apt install -y cmake
-            cmake . -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+            cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
             make
             mv ycc2rgb ycc2rgb_${{ matrix.build-type }}
     # Upload artifact
