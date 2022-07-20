@@ -4,18 +4,6 @@
 #include "util.h"
 #include "conversion.h"
 
-uint8_t rgb_to_y(struct rgb_pixel *rgb_pixel) {
-    return (uint8_t)(0.299 * rgb_pixel->r + 0.587 * rgb_pixel->g + 0.114 * rgb_pixel->b);
-}
-
-uint8_t rgb_to_cb(struct rgb_pixel *rgb_pixel) {
-    return (uint8_t)(-0.1687 * rgb_pixel->r - 0.3313 * rgb_pixel->g + 0.5 * rgb_pixel->b + 128);
-}
-
-uint8_t rgb_to_cr(struct rgb_pixel *rgb_pixel) {
-    return (uint8_t)(0.5 * rgb_pixel->r - 0.4187 * rgb_pixel->g - 0.0813 * rgb_pixel->b + 128);
-}
-
 // TODO: pass by value might be able to be optimized away
 void single_value_ycc_to_rgb(uint8_t y, uint8_t cb, uint8_t cr, struct rgb_pixel *rgb_pixel) {
     double Y = (double) y;
@@ -50,6 +38,22 @@ void ycc_to_rgb(struct ycc_img* src_img, struct rgb_img* dst_img){
             single_value_ycc_to_rgb(pix.y_br, pix.cb, pix.cr, &(dst_img->data[i * 2 * dst_img->width + j * 2 + dst_img->width + 1]));
         }
     }
+}
+
+// NOTE:
+// everything underneath this comment was created for generating test data solely
+// it is un-optimized as optimizing it is out of the scope of this project
+
+uint8_t rgb_to_y(struct rgb_pixel *rgb_pixel) {
+    return (uint8_t)(0.299 * rgb_pixel->r + 0.587 * rgb_pixel->g + 0.114 * rgb_pixel->b);
+}
+
+uint8_t rgb_to_cb(struct rgb_pixel *rgb_pixel) {
+    return (uint8_t)(-0.1687 * rgb_pixel->r - 0.3313 * rgb_pixel->g + 0.5 * rgb_pixel->b + 128);
+}
+
+uint8_t rgb_to_cr(struct rgb_pixel *rgb_pixel) {
+    return (uint8_t)(0.5 * rgb_pixel->r - 0.4187 * rgb_pixel->g - 0.0813 * rgb_pixel->b + 128);
 }
 
 void rgb_to_ycc(struct rgb_img *src_img, struct ycc_img *dst_img){
