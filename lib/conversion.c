@@ -1,6 +1,6 @@
 #include "conversion.h"
 
-// #include <stdlib.h>
+#include <stdlib.h>
 
 void single_value_ycc_to_rgb(struct ycc_pixel *pixel, struct rgb_pixel *rgb_pixel) {
     double Y = (double) pixel->y;
