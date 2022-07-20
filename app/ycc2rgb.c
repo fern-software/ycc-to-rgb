@@ -1,3 +1,5 @@
+// Converts a YCbCr image given in a custom file format into an RGB image given as a PPM file
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
