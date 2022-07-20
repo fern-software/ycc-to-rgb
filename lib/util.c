@@ -8,12 +8,6 @@ int read_ycc_img(char* filename, struct ycc_img* image){
 		return 0;
 	}
 
-	image->width = IMAGE_WIDTH;
-	image->height = IMAGE_HEIGHT;
-
-	image->y = malloc(image->width * image->height * sizeof(uint8_t));
-	image->cb = malloc((image->width * image->height * sizeof(uint8_t)) / 4);
-	image->cr = malloc((image->width * image->height * sizeof(uint8_t)) / 4);
 	if(!image->y || !image->cb || !image->cr){
 		return 0;
 	}
@@ -25,8 +19,10 @@ int read_ycc_img(char* filename, struct ycc_img* image){
 
 	for(int i = 0; i < image->width * image->height; ++i){
 		(image->y[i]) = fgetc(fp);
-		(image->cb[i]) = fgetc(fp);
-		(image->cr[i]) = fgetc(fp);
+		if (i % 4 == 0){
+			(image->cb[i / 4]) = fgetc(fp);
+			(image->cr[i / 4]) = fgetc(fp);
+		}
 	}
 	
 	fclose(fp);
