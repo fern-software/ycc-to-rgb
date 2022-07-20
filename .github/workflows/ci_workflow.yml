@@ -5,13 +5,15 @@ on:
   push:
     branches:
       - build
-  pull_request:
 
 permissions:
   contents: write
 
 jobs:
   build:
+    strategy:
+      matrix:
+        build-type: [Debug, Release, MinSizeRel]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -23,14 +25,26 @@ jobs:
         cpu_info: cpuinfo/raspberrypi_4b
         commands: |
             apt install -y cmake
-            cmake .
+            cmake . -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
             make
-            zip release.zip app include lib testimages ycc2rgb
+    # Upload artifact
+    - uses: actions/upload-artifact@v3
+      with:
+        name: build-ycc2rgb-${{ matrix.build-type }}
+        path: build/ycc2rgb-${{ matrix.build-type }}
+
 
   release:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+    - name: Download builds
+      uses: actions/download-artifact@v3
+      with:
+        path: build
+    - name: Zip release
+      run: |
+        zip -r release.zip build app include lib testimages
     - name: Bump version and push tag
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.0
