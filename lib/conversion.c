@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "util.h"
 #include "conversion.h"
@@ -56,12 +57,15 @@ void rgb_to_ycc(struct rgb_img *src_img, struct ycc_img *dst_img){
     dst_img->height = src_img->height / 2;
     dst_img->data = malloc(dst_img->width * dst_img->height * sizeof(struct ycc_pixel));
     
-    uint8_t* fullres_cb = malloc(src_img->width * src_img->height);
-    uint8_t* fullres_cr = malloc(src_img->width * src_img->height);
+    uint16_t* cb_accumulator = malloc(src_img->width * src_img->height * sizeof(uint16_t));
+    uint16_t* cr_accumulator = malloc(src_img->width * src_img->height * sizeof(uint16_t));
 
-    if(!dst_img->data || !fullres_cb || !fullres_cr){
+    if(!dst_img->data || !cb_accumulator || !cr_accumulator){
         return;
     }
+
+    memset(cb_accumulator, 0, src_img->width * src_img->height * sizeof(uint16_t));
+    memset(cr_accumulator, 0, src_img->width * src_img->height * sizeof(uint16_t));
     
     for(int i = 0; i < src_img->height; ++i){
         for(int j = 0; j < src_img->width; ++j){
@@ -84,22 +88,17 @@ void rgb_to_ycc(struct rgb_img *src_img, struct ycc_img *dst_img){
                 }
             }
 
-            (dst_img->data[(i / 2) * dst_img->width + (j / 2)]).cb = rgb_to_cb(&(src_img->data[i * src_img->width + j]));
-            (dst_img->data[(i / 2) * dst_img->width + (j / 2)]).cr = rgb_to_cr(&(src_img->data[i * src_img->width + j]));
-            
-            // fullres_cb[i * src_img->width + j] = rgb_to_cb(&(src_img->data[i * src_img->width + j]));
-            // fullres_cr[i * src_img->width + j] = rgb_to_cr(&(src_img->data[i * src_img->width + j]));
+            cb_accumulator[(i / 2) * dst_img->width + (j / 2)] += rgb_to_cb(&(src_img->data[i * src_img->width + j]));
+            cr_accumulator[(i / 2) * dst_img->width + (j / 2)] += rgb_to_cr(&(src_img->data[i * src_img->width + j]));
         }
     }
 
-    // // Downsample Cb and Cr by averaging the values of neighboring pixels.
-    // for(int i = 0; i < dst_img->height; ++i){
-    //     for(int j = 0; j < dst_img->width; ++j){
-    //         (dst_img->data[i * dst_img->width + j]).cb = (uint8_t)((fullres_cb[i * 2 * dst_img->width + j] + fullres_cb[i * 2 * dst_img->width + j + 1] + fullres_cb[i * 2 * dst_img->width + j * 2 + dst_img->width] + fullres_cb[i * 2 * dst_img->width + j * 2 + dst_img->width + 1]) / 4);
-    //         (dst_img->data[i * dst_img->width + j]).cr = (uint8_t)((fullres_cr[i * 2 * dst_img->width + j] + fullres_cr[i * 2 * dst_img->width + j + 1] + fullres_cr[i * 2 * dst_img->width + j * 2 + dst_img->width] + fullres_cr[i * 2 * dst_img->width + j * 2 + dst_img->width + 1]) / 4);
-    //     }
-    // }
+    // Downsample Cb and Cr by averaging the values of neighboring pixels.
+    for(int i = 0; i < dst_img->height * dst_img->width; ++i){
+        (dst_img->data[i]).cb = (uint8_t) (cb_accumulator[i] / 4);
+        (dst_img->data[i]).cr = (uint8_t) (cr_accumulator[i] / 4);
+    }
 
-    free(fullres_cb);
-    free(fullres_cr);
+    free(cb_accumulator);
+    free(cr_accumulator);
 }
