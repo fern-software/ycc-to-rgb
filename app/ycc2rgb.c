@@ -30,12 +30,12 @@ int main(int argc, char **argv){
 		error(EXIT_FAILURE, errno, "reading image failed");
 	}
 
-	// ycc_to_rgb(in_img, out_img);
+	ycc_to_rgb(in_img, out_img);
 	
-	// err = write_rgb_img(argv[2], out_img);
-	// if(!err){
-	// 	error(EXIT_FAILURE, errno, "writing image failed");
-	// }
+	err = write_rgb_img(argv[2], out_img);
+	if(!err){
+		error(EXIT_FAILURE, errno, "writing image failed");
+	}
 
 	
 	free(in_img->y);
