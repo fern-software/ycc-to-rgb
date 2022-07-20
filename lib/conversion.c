@@ -63,32 +63,42 @@ void rgb_to_ycc(struct rgb_img *src_img, struct ycc_img *dst_img){
         return;
     }
     
-    for(int i = 0; i < src_img->width * src_img->height; ++i){
-        uint8_t y = rgb_to_y(&(src_img->data[i]));
-        switch(i % 4){
-            case 0:
-                (dst_img->data[i / 4]).y_tl = y;
-                break;
-            case 1:
-                (dst_img->data[i / 4]).y_tr = y;
-                break;
-            case 2:
-                (dst_img->data[i / 4]).y_bl = y;
-                break;
-            case 3:
-                (dst_img->data[i / 4]).y_br = y;
-                break;
+    for(int i = 0; i < src_img->height; ++i){
+        for(int j = 0; j < src_img->width; ++j){
+            uint8_t y = rgb_to_y(&(src_img->data[i * src_img->width + j]));
+            
+            if(i % 2 == 0){
+                if(j % 2 == 0){
+                    (dst_img->data[(i / 2) * dst_img->width + (j / 2)]).y_tl = y;
+                }
+                else{
+                    (dst_img->data[(i / 2) * dst_img->width + (j / 2)]).y_tr = y;
+                }
+            }
+            else {
+                if(j % 2 == 0){
+                    (dst_img->data[(i / 2) * dst_img->width + (j / 2)]).y_bl = y;
+                }
+                else{
+                    (dst_img->data[(i / 2) * dst_img->width + (j / 2)]).y_br = y;
+                }
+            }
+
+            (dst_img->data[(i / 2) * dst_img->width + (j / 2)]).cb = rgb_to_cb(&(src_img->data[i * src_img->width + j]));
+            (dst_img->data[(i / 2) * dst_img->width + (j / 2)]).cr = rgb_to_cr(&(src_img->data[i * src_img->width + j]));
+            
+            // fullres_cb[i * src_img->width + j] = rgb_to_cb(&(src_img->data[i * src_img->width + j]));
+            // fullres_cr[i * src_img->width + j] = rgb_to_cr(&(src_img->data[i * src_img->width + j]));
         }
-        
-        fullres_cb[i] = rgb_to_cb(&(src_img->data[i]));
-        fullres_cr[i] = rgb_to_cr(&(src_img->data[i]));
     }
 
-    // Downsample Cb and Cr by averaging the values of neighboring pixels.
-    for(int i = 0; i < dst_img->width * dst_img->height; ++i){
-        (dst_img->data[i]).cb = (uint8_t)((fullres_cb[i * 4] + fullres_cb[(i * 4) + 1] + fullres_cb[(i * 4) + dst_img->width] + fullres_cb[(i * 4) + dst_img->width + 1]) / 4);
-        (dst_img->data[i]).cr = (uint8_t)((fullres_cr[i * 4] + fullres_cr[(i * 4) + 1] + fullres_cr[(i * 4) + dst_img->width] + fullres_cr[(i * 4) + dst_img->width + 1]) / 4);
-    }
+    // // Downsample Cb and Cr by averaging the values of neighboring pixels.
+    // for(int i = 0; i < dst_img->height; ++i){
+    //     for(int j = 0; j < dst_img->width; ++j){
+    //         (dst_img->data[i * dst_img->width + j]).cb = (uint8_t)((fullres_cb[i * 2 * dst_img->width + j] + fullres_cb[i * 2 * dst_img->width + j + 1] + fullres_cb[i * 2 * dst_img->width + j * 2 + dst_img->width] + fullres_cb[i * 2 * dst_img->width + j * 2 + dst_img->width + 1]) / 4);
+    //         (dst_img->data[i * dst_img->width + j]).cr = (uint8_t)((fullres_cr[i * 2 * dst_img->width + j] + fullres_cr[i * 2 * dst_img->width + j + 1] + fullres_cr[i * 2 * dst_img->width + j * 2 + dst_img->width] + fullres_cr[i * 2 * dst_img->width + j * 2 + dst_img->width + 1]) / 4);
+    //     }
+    // }
 
     free(fullres_cb);
     free(fullres_cr);
