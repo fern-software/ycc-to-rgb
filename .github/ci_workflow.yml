@@ -1,0 +1,38 @@
+name: 'Runtime analysis'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - build
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pguyot/arm-runner-action@v2
+      id: build_image
+      with:
+        base_image: raspios_lite_arm64:2022-04-04
+        cpu: max:cortex-a72
+        cpu_info: cpuinfo/raspberrypi_4b
+        commands: |
+            cmake .
+            make
+            zip release.zip app include lib testimages ycc2rgb
+    # - name: Compress the release image
+    #   if: github.ref == 'refs/heads/releng' || startsWith(github.ref, 'refs/tags/')
+    #   run: |
+    #     mv ${{ steps.build_image.outputs.image }} my-release-image.img
+    #     xz -0 -T 0 -v my-release-image.img
+    - name: Upload release image
+      uses: actions/upload-artifact@v2
+      if: github.ref == 'refs/heads/releng' || startsWith(github.ref, 'refs/tags/')
+      with:
+        name: Release image
+        path: release.zip
