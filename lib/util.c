@@ -13,7 +13,7 @@ int read_ycc_img(char* filename, struct ycc_img* image){
 		return 0;
 	}
 
-	fscanf(fp, "YCC\n%d %d\n", &(image->width), &(image->height));
+	fscanf(fp, "YCbCr\n%d %d\n", &(image->width), &(image->height));
 
 	image->data = malloc(image->width * image->height * sizeof(struct ycc_pixel));
 	if(!image->data){
@@ -39,7 +39,7 @@ int write_ycc_img(char* filename, struct ycc_img* image){
 		return 0;
 	}
 
-	fprintf(fp, "YCC\n%d %d\n", image->width, image->height);
+	fprintf(fp, "YCbCr\n%d %d\n", image->width, image->height);
 	for(int i = 0; i < image->width * image->height; ++i){
 		fputc((image->data[i]).y_tl, fp);
 		fputc((image->data[i]).y_tr, fp);
