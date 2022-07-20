@@ -11,18 +11,14 @@ set(CMAKE_C=_FLAGS "${CMAKE_C_FLAGS} -Wall")
 set(C_STANDARD C17)
 
 # library
-add_library(util lib/util.c)
-add_library(conversion lib/conversion.c)
-target_include_directories(util PUBLIC include)
-target_include_directories(conversion PUBLIC include)
+add_library(colourspace lib/util.c lib/conversion.c)
+target_include_directories(colourspace PUBLIC include)
 
 # executables
 add_executable(ycc2rgb app/ycc2rgb.c)
 target_include_directories(ycc2rgb PUBLIC include)
-target_link_libraries(ycc2rgb util)
-target_link_libraries(ycc2rgb conversion)
+target_link_libraries(ycc2rgb colourspace)
 
 add_executable(rgb2ycc app/rgb2ycc.c)
 target_include_directories(rgb2ycc PUBLIC include)
-target_link_libraries(rgb2ycc util)
-target_link_libraries(rgb2ycc conversion)
+target_link_libraries(rgb2ycc colourspace)
