@@ -3,7 +3,7 @@
 #include "util.h"
 
 // Converts a single YCC pixel to an RGB pixel.
-void single_value_ycc_to_rgb(uint8_t *y, uint8_t *cb, uint8_t *cr, struct rgb_pixel *rgb_pixel);
+void single_value_ycc_to_rgb(uint8_t y, uint8_t cb, uint8_t cr, struct rgb_pixel *rgb_pixel);
 
 // Converts a YCC image to an RGB image.
 // Note: allocates (width*height*sizeof(rgb_pixel)) memory for dst_img. This can most likely be optimized.

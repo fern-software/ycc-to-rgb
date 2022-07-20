@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.18.4 FATAL_ERROR)
 project(ycctorgb LANGUAGES C)
 set(CMAKE_VERBOSE_MAKEFILE true)
 
+// TODO: use only one library instead of two
+
 # set warnings to all
 set(CMAKE_C=_FLAGS "${CMAKE_C_FLAGS} -Wall")
 

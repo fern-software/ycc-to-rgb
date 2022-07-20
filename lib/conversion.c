@@ -1,6 +1,7 @@
+#include <stdlib.h>
+
 #include "util.h"
 #include "conversion.h"
-
 
 uint8_t rgb_to_y(struct rgb_pixel *rgb_pixel) {
     return (uint8_t)(0.299 * rgb_pixel->r + 0.587 * rgb_pixel->g + 0.114 * rgb_pixel->b);
@@ -14,10 +15,11 @@ uint8_t rgb_to_cr(struct rgb_pixel *rgb_pixel) {
     return (uint8_t)(0.5 * rgb_pixel->r - 0.4187 * rgb_pixel->g - 0.0813 * rgb_pixel->b + 128);
 }
 
-void single_value_ycc_to_rgb(uint8_t *y, uint8_t *cb, uint8_t *cr, struct rgb_pixel *rgb_pixel) {
-    double Y = (double) *y;
-    double Cb = (double) *cb;
-    double Cr = (double) *cr;
+// TODO: pass by value might be able to be optimized away
+void single_value_ycc_to_rgb(uint8_t y, uint8_t cb, uint8_t cr, struct rgb_pixel *rgb_pixel) {
+    double Y = (double) y;
+    double Cb = (double) cb;
+    double Cr = (double) cr;
 
     int r = (int) (Y + 1.40200 * (Cr - 128));
     int g = (int) (Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128));
@@ -29,18 +31,23 @@ void single_value_ycc_to_rgb(uint8_t *y, uint8_t *cb, uint8_t *cr, struct rgb_pi
     rgb_pixel->b = max(0, min(255, b));
 }
 
-// void ycc_to_rgb(struct ycc_img* src_img, struct rgb_img* dst_img){
-//     dst_img->width = src_img->width;
-//     dst_img->height = src_img->height;
-//     dst_img->data = malloc(dst_img->width * dst_img->height * sizeof(struct rgb_pixel));
-//     if(!dst_img->data){
-//         return;
-//     }
+void ycc_to_rgb(struct ycc_img* src_img, struct rgb_img* dst_img){
+    dst_img->width = src_img->width * 4;
+    dst_img->height = src_img->height * 4;
+    dst_img->data = malloc(dst_img->width * dst_img->height * sizeof(struct rgb_pixel));
+    if(!dst_img->data){
+        return;
+    }
     
-//     for(int i = 0; i < dst_img->width * dst_img->height; ++i){
-//         single_value_ycc_to_rgb(&src_img->y[i], &src_img->cb[i], &src_img->cr[i], &dst_img->data[i]);
-//     }
-// }
+    // TODO: loop could be optimized by changing the i * 4 to a bitshift
+    for(int i = 0; i < src_img->width * src_img->height; ++i){
+        struct ycc_pixel pix = src_img->data[i];
+        single_value_ycc_to_rgb(pix.y_tl, pix.cb, pix.cr, &dst_img->data[i * 4]);
+        single_value_ycc_to_rgb(pix.y_tr, pix.cb, pix.cr, &dst_img->data[(i * 4) + 1]);
+        single_value_ycc_to_rgb(pix.y_bl, pix.cb, pix.cr, &dst_img->data[(i * 4) + 2]);
+        single_value_ycc_to_rgb(pix.y_br, pix.cb, pix.cr, &dst_img->data[(i * 4) + 3]);
+    }
+}
 
 void rgb_to_ycc(struct rgb_img *src_img, struct ycc_img *dst_img) {
     dst_img->width = src_img->width / 4;
