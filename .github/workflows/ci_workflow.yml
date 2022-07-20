@@ -24,7 +24,7 @@ jobs:
         base_image: raspios_lite_arm64:latest
         cpu: max:cortex-a72
         cpu_info: cpuinfo/raspberrypi_4b
-        copy_artifact_path: [build/ycc2rgb_${{ matrix.build-type }}, build/ycc2rgb_${{ matrix.build-type }}.s, conversion_${{ matrix.build-type }}.s, util_${{ matrix.build-type }}.s]
+        copy_artifact_path: build/ycc2rgb_${{ matrix.build-type }};build/*.s
         copy_artifact_dest: build/
         commands: |
             cd build
