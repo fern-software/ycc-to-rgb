@@ -29,7 +29,7 @@ jobs:
         commands: |
             cd build
             apt install -y cmake
-            cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+            cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DEXPORT_ASM=true
             make
             mv ycc2rgb ycc2rgb_${{ matrix.build-type }}
             mv ycc2rgb.s ycc2rgb_${{ matrix.build-type }}.s
