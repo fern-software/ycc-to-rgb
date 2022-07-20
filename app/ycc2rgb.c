@@ -11,13 +11,6 @@ int main(int argc, char **argv){
 
 	// Allocate memory
 	struct ycc_img* in_img = malloc(sizeof(struct ycc_img));
-	in_img->width = IMAGE_WIDTH;
-	in_img->height = IMAGE_HEIGHT;
-
-	in_img->y = malloc(in_img->width * in_img->height * sizeof(uint8_t));
-	in_img->cb = malloc((in_img->width * in_img->height * sizeof(uint8_t)) / 4);
-	in_img->cr = malloc((in_img->width * in_img->height * sizeof(uint8_t)) / 4);
-
 	struct rgb_img* out_img = malloc(sizeof(struct rgb_img));
 	
 	if(argc != 3){

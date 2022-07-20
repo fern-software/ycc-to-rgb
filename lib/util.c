@@ -8,21 +8,73 @@ int read_ycc_img(char* filename, struct ycc_img* image){
 		return 0;
 	}
 
-	if(!image->y || !image->cb || !image->cr){
-		return 0;
-	}
-
-	FILE* fp = fopen(filename, "r");
+	FILE* fp = fopen(filename, "rb");
 	if(!fp){
 		return 0;
 	}
 
+	fscanf(fp, "YCC\n%d %d\n", &(image->width), &(image->height));
+
+	image->data = malloc(image->width * image->height * sizeof(struct ycc_pixel));
+	if(!image->data){
+		return 0;
+	}
+
 	for(int i = 0; i < image->width * image->height; ++i){
-		(image->y[i]) = fgetc(fp);
-		if (i % 4 == 0){
-			(image->cb[i / 4]) = fgetc(fp);
-			(image->cr[i / 4]) = fgetc(fp);
-		}
+		(image->data[i]).y_tl = fgetc(fp);
+		(image->data[i]).y_tr = fgetc(fp);
+		(image->data[i]).y_bl = fgetc(fp);
+		(image->data[i]).y_br = fgetc(fp);
+		(image->data[i]).cb = fgetc(fp);
+		(image->data[i]).cr = fgetc(fp);
+	}
+	
+	fclose(fp);
+	return 1;
+}
+
+int write_ycc_img(char* filename, struct ycc_img* image){
+	FILE *fp = fopen(filename, "wb");
+	if(!fp){
+		return 0;
+	}
+
+	fprintf(fp, "YCC\n%d %d\n", image->width, image->height);
+	for(int i = 0; i < image->width * image->height; ++i){
+		fputc((image->data[i]).y_tl, fp);
+		fputc((image->data[i]).y_tr, fp);
+		fputc((image->data[i]).y_bl, fp);
+		fputc((image->data[i]).y_br, fp);
+		fputc((image->data[i]).cb, fp);
+		fputc((image->data[i]).cr, fp);
+	}
+
+	fclose(fp);
+
+	return 1;
+}
+
+int read_rgb_img(char* filename, struct rgb_img* image){
+	if(!image){
+		return 0;
+	}
+
+	FILE* fp = fopen(filename, "rb");
+	if(!fp){
+		return 0;
+	}
+
+	fscanf(fp, "P6\n%d %d\n255\n", &(image->width), &(image->height));
+
+	image->data = malloc(image->width * image->height * sizeof(struct ycc_pixel));
+	if(!image->data){
+		return 0;
+	}
+
+	for(int i = 0; i < image->width * image->height; ++i){
+		(image->data[i]).r = fgetc(fp);
+		(image->data[i]).g = fgetc(fp);
+		(image->data[i]).b = fgetc(fp);
 	}
 	
 	fclose(fp);
