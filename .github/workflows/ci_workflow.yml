@@ -25,6 +25,7 @@ jobs:
         cpu: max:cortex-a72
         cpu_info: cpuinfo/raspberrypi_4b
         copy_artifact_path: build/ycc2rgb_${{ matrix.build-type }}
+        copy_artifact_dest: build/
         commands: |
             cd build
             apt install -y cmake
