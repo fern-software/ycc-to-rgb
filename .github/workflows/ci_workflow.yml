@@ -24,7 +24,7 @@ jobs:
         base_image: raspios_lite_arm64:latest
         cpu: max:cortex-a72
         cpu_info: cpuinfo/raspberrypi_4b
-        copy_artifact_path: build/ycc2rgb_${{ matrix.build-type }}
+        copy_artifact_path: [build/ycc2rgb_${{ matrix.build-type }}, build/ycc2rgb_${{ matrix.build-type }}.s, conversion_${{ matrix.build-type }}.s, util_${{ matrix.build-type }}.s]
         copy_artifact_dest: build/
         commands: |
             cd build
@@ -32,11 +32,13 @@ jobs:
             cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
             make
             mv ycc2rgb ycc2rgb_${{ matrix.build-type }}
-    # Upload artifact
+            mv ycc2rgb.s ycc2rgb_${{ matrix.build-type }}.s
+            mv conversion.s conversion_${{ matrix.build-type }}.s
+            mv util.s util_${{ matrix.build-type }}.s
     - uses: actions/upload-artifact@v3
       with:
-        name: ycc2rgb-${{ matrix.build-type }}
-        path: build/ycc2rgb_${{ matrix.build-type }}
+        name: ycc2rgb_${{ matrix.build-type }}
+        path: build/
         if-no-files-found: error
 
 
