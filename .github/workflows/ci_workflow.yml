@@ -33,8 +33,9 @@ jobs:
     # Upload artifact
     - uses: actions/upload-artifact@v3
       with:
-        name: build-ycc2rgb-${{ matrix.build-type }}
-        path: build/ycc2rgb_${{ matrix.build-type }}
+        name: ycc2rgb-${{ matrix.build-type }}
+        path: ycc2rgb_${{ matrix.build-type }}
+        if-no-files-found: error
 
 
   release:
