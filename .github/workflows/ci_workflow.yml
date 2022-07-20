@@ -25,14 +25,16 @@ jobs:
         cpu: max:cortex-a72
         cpu_info: cpuinfo/raspberrypi_4b
         commands: |
+            cd build
             apt install -y cmake
             cmake . -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
             make
+            mv ycc2rgb ycc2rgb_${{ matrix.build-type }}
     # Upload artifact
     - uses: actions/upload-artifact@v3
       with:
         name: build-ycc2rgb-${{ matrix.build-type }}
-        path: build/ycc2rgb-${{ matrix.build-type }}
+        path: build/ycc2rgb_${{ matrix.build-type }}
 
 
   release:
