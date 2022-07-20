@@ -22,6 +22,7 @@ jobs:
         cpu: max:cortex-a72
         cpu_info: cpuinfo/raspberrypi_4b
         commands: |
+            apt install -y cmake
             cmake .
             make
             zip release.zip app include lib testimages ycc2rgb
