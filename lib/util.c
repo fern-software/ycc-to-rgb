@@ -66,7 +66,7 @@ int read_rgb_img(char* filename, struct rgb_img* image){
 
 	fscanf(fp, "P6\n%d %d\n255\n", &(image->width), &(image->height));
 
-	image->data = malloc(image->width * image->height * sizeof(struct ycc_pixel));
+	image->data = malloc(image->width * image->height * sizeof(struct rgb_pixel));
 	if(!image->data){
 		return 0;
 	}

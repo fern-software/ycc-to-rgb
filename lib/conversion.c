@@ -32,8 +32,8 @@ void single_value_ycc_to_rgb(uint8_t y, uint8_t cb, uint8_t cr, struct rgb_pixel
 }
 
 void ycc_to_rgb(struct ycc_img* src_img, struct rgb_img* dst_img){
-    dst_img->width = src_img->width * 4;
-    dst_img->height = src_img->height * 4;
+    dst_img->width = src_img->width * 2;
+    dst_img->height = src_img->height * 2;
     dst_img->data = malloc(dst_img->width * dst_img->height * sizeof(struct rgb_pixel));
     if(!dst_img->data){
         return;
@@ -49,42 +49,45 @@ void ycc_to_rgb(struct ycc_img* src_img, struct rgb_img* dst_img){
     }
 }
 
-void rgb_to_ycc(struct rgb_img *src_img, struct ycc_img *dst_img) {
-    dst_img->width = src_img->width / 4;
-    dst_img->height = src_img->height / 4;
+void rgb_to_ycc(struct rgb_img *src_img, struct ycc_img *dst_img){
+    dst_img->width = src_img->width / 2;
+    dst_img->height = src_img->height / 2;
     dst_img->data = malloc(dst_img->width * dst_img->height * sizeof(struct ycc_pixel));
-    uint8_t fullres_cb[dst_img->width * dst_img->height];
-    uint8_t fullres_cr[dst_img->width * dst_img->height];
+    
+    uint8_t* fullres_cb = malloc(src_img->width * src_img->height);
+    uint8_t* fullres_cr = malloc(src_img->width * src_img->height);
 
-    if(!dst_img->data){
+    if(!dst_img->data || !fullres_cb || !fullres_cr){
         return;
     }
     
-    for(int i = 0; i < dst_img->width * dst_img->height; ++i){
-        uint8_t y = rgb_to_y(&src_img->data[i]);
+    for(int i = 0; i < src_img->width * src_img->height; ++i){
+        uint8_t y = rgb_to_y(&(src_img->data[i]));
         switch(i % 4){
             case 0:
-                (dst_img->data[i]).y_tl = y;
+                (dst_img->data[i / 4]).y_tl = y;
                 break;
             case 1:
-                (dst_img->data[i]).y_tr = y;
+                (dst_img->data[i / 4]).y_tr = y;
                 break;
             case 2:
-                (dst_img->data[i]).y_bl = y;
+                (dst_img->data[i / 4]).y_bl = y;
                 break;
             case 3:
-                (dst_img->data[i]).y_br = y;
+                (dst_img->data[i / 4]).y_br = y;
                 break;
         }
         
-        fullres_cb[i] = rgb_to_cb(&src_img->data[i]);
-        fullres_cr[i] = rgb_to_cr(&src_img->data[i]);
+        fullres_cb[i] = rgb_to_cb(&(src_img->data[i]));
+        fullres_cr[i] = rgb_to_cr(&(src_img->data[i]));
     }
 
     // Downsample Cb and Cr by averaging the values of neighboring pixels.
     for(int i = 0; i < dst_img->width * dst_img->height; ++i){
-        (dst_img->data[i]).cb = (uint8_t)((fullres_cb[i] + fullres_cb[i + 1] + fullres_cb[i + dst_img->width] + fullres_cb[i + dst_img->width + 1]) / 4);
-        (dst_img->data[i]).cr = (uint8_t)((fullres_cr[i] + fullres_cr[i + 1] + fullres_cr[i + dst_img->width] + fullres_cr[i + dst_img->width + 1]) / 4);
+        (dst_img->data[i]).cb = (uint8_t)((fullres_cb[i * 4] + fullres_cb[(i * 4) + 1] + fullres_cb[(i * 4) + dst_img->width] + fullres_cb[(i * 4) + dst_img->width + 1]) / 4);
+        (dst_img->data[i]).cr = (uint8_t)((fullres_cr[i * 4] + fullres_cr[(i * 4) + 1] + fullres_cr[(i * 4) + dst_img->width] + fullres_cr[(i * 4) + dst_img->width + 1]) / 4);
     }
 
+    free(fullres_cb);
+    free(fullres_cr);
 }
