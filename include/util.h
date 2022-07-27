@@ -30,12 +30,7 @@ struct rgb_img {
 	unsigned int height;
 };
 
-// // Returns the smaller of a,b. If a==b, returns a.
-// int min(int a, int b);
-
-// // Returns the larger of a,b. If a==b, returns a.
-// int max(int a, int b);
-
+// Returns the smaller of a,b. If a==b, returns a.
 static inline int min(int a, int b){
 	if(a <= b){
 		return a;
@@ -43,6 +38,7 @@ static inline int min(int a, int b){
 	return b;
 }
 
+// Returns the larger of a,b. If a==b, returns a.
 static inline int max(int a, int b){
 	if(a >= b){
 		return a;
