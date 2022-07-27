@@ -99,16 +99,3 @@ int write_rgb_img(char* filename, struct rgb_img* image){
 	return 1;
 }
 
-int min(int a, int b){
-	if(a <= b){
-		return a;
-	}
-	return b;
-}
-
-int max(int a, int b){
-	if(a >= b){
-		return a;
-	}
-	return b;
-}
