@@ -32,18 +32,12 @@ struct rgb_img {
 
 // Returns the smaller of a,b. If a==b, returns a.
 static inline int min(int a, int b){
-	if(a <= b){
-		return a;
-	}
-	return b;
+	return (b > a) ? a : b;
 }
 
 // Returns the larger of a,b. If a==b, returns a.
 static inline int max(int a, int b){
-	if(a >= b){
-		return a;
-	}
-	return b;
+	return (b > a) ? b: a;
 }
 
 // reads a YCC image stored at filename and populates image with its data
