@@ -2,23 +2,22 @@
 
 #include "util.h"
 
-// Converts a single YCC pixel to an RGB pixel.
-// TODO: pass by value might be able to be optimized away
+// Converts a single YCC pixel to an RGB pixel using fixed point arithmetic.
+//
+// we will use integer multiplication instead of fractional multiplication
+// this will give us results that are 32 bits
+//
+// since the multiplier constants will not change we will use
+// and are all smaller than 2 we will use 2^15 / 2^1 = 2^14
+// as our scale factors for the constants
+//
+// ycc values are in the range [-128, 127]
+// this gives a scale factor of 2^15 / 2^7 = 2^8 for cb, and cr
+//
+// y is a little different however since we only add and substract it
+// it must have the same factor as a constant multiplied by cb or cr
+// this would be 2^8 * 2^14 = 2^22
 static inline void single_value_ycc_to_rgb(uint8_t y, uint8_t cb, uint8_t cr, struct rgb_pixel *rgb_pixel) {
-    // we will use integer multiplication instead of fractional multiplication
-    // this will give us results that are 32 bits wide
-    
-    // since the multiplier constants will not change we will use
-    // and are all smaller than 2 we will use 2^15 / 2^1 = 2^14
-    // as our scale factors for the constants
-    
-    // ycc values are in the range [-128, 127]
-    // this gives a scale factor of 2^15 / 2^7 = 2^8 for cb, and cr
-
-    // y is a little different however since we only add and substract it
-    // it must have the same factor as a constant multiplied by cb or cr
-    // this would be 2^8 * 2^14 = 2^22
-
     // scale up
     int32_t Y = ((int32_t) y) << 22;
     int32_t Cb = (((int32_t) cb) - 128) << 8;
