@@ -24,16 +24,16 @@ static inline void single_value_ycc_to_rgb(uint8_t y, uint8_t cb, uint8_t cr, st
     int32_t Cr = (((int32_t) cr) - 128) << 8;
 
     // 1.40200 << 14
-    register uint32_t r_mul = 22970;
+    register int32_t r_mul = 22970;
 
     // 0.34414 << 14
-    register uint32_t g_cb_mul = 5638;
+    register int32_t g_cb_mul = 5638;
 
     // 0.71414 << 14
-    register uint32_t g_cr_mul = 11700; 
+    register int32_t g_cr_mul = 11700; 
 
     // 1.77200 << 14
-    register uint32_t b_mul = 29032;
+    register int32_t b_mul = 29032;
 
     // multiply and scale down
     int32_t r = ((Y + r_mul * Cr)) >> 22;
