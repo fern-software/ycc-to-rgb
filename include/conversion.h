@@ -36,14 +36,9 @@ static inline void single_value_ycc_to_rgb(uint8_t y, uint8_t cb, uint8_t cr, st
     register uint32_t b_mul = 29032;
 
     // multiply
-    int32_t r = (Y + r_mul * Cr);
-    int32_t g = (Y - g_cb_mul * Cb) - (g_cr_mul * Cr);
-    int32_t b = (Y + b_mul * Cb);
-
-    // scale down
-    r >>= 22;
-    g >>= 22;
-    b >>= 22;
+    int32_t r = ((Y + r_mul * Cr)) >> 22;
+    int32_t g = ((Y - g_cb_mul * Cb) - (g_cr_mul * Cr)) >> 22;
+    int32_t b = ((Y + b_mul * Cb)) >> 22;
 
     // Clip values to [0, 255]
     rgb_pixel->r = max(0, min(255, r));
